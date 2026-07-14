@@ -1,0 +1,4 @@
+interface:
+  display_name: "AMZ analysis set"
+  short_description: "Amazon SellerSprite AI analytics platform with 8 modules"
+  default_prompt: "分析我的亚马逊店铺数据，启动 AMZ analysis set 平台"

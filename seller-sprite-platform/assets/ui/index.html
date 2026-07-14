@@ -1,0 +1,381 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AMZ analysis set</title>
+<style>
+:root {
+  --bg: #f1f5f9; --sidebar-bg: #fff; --card-bg: #fff; --card-border: #e2e8f0;
+  --text: #0f172a; --text-muted: #475569; --text-dim: #94a3b8;
+  --accent: #2563eb; --accent-hover: #1d4ed8; --accent-2: #0891b2;
+  --success: #16a34a; --danger: #dc2626; --warning: #d97706; --radius: 8px;
+  --font: -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--text);overflow:hidden}
+body{display:flex}
+
+/* Sidebar */
+.sidebar{width:220px;min-width:220px;background:var(--sidebar-bg);border-right:1px solid var(--card-border);display:flex;flex-direction:column;box-shadow:1px 0 4px rgba(0,0,0,.03)}
+.sidebar-header{padding:18px 16px;border-bottom:1px solid var(--card-border)}
+.sidebar-header h1{font-size:15px;font-weight:700;letter-spacing:-.3px}
+.sidebar-header .sub{font-size:10px;color:var(--text-dim);margin-top:3px}
+.sidebar-nav{flex:1;overflow-y:auto;padding:6px 0}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;margin:1px 8px;border-radius:var(--radius);cursor:pointer;color:var(--text-muted);font-size:13px;transition:all .12s;border:none;background:none;width:calc(100% - 16px);text-align:left;font-family:var(--font)}
+.nav-item:hover{background:#eff6ff;color:var(--text)}
+.nav-item.active{background:#dbeafe;color:var(--accent);font-weight:600}
+.nav-item svg{width:17px;height:17px;flex-shrink:0;opacity:.65}
+.nav-item.active svg{opacity:1}
+.sidebar-footer{padding:10px 16px;border-top:1px solid var(--card-border);display:flex;align-items:center;gap:8px}
+.sidebar-footer .dot{width:7px;height:7px;border-radius:50%}
+.sidebar-footer .dot.green{background:var(--success);box-shadow:0 0 6px rgba(22,163,74,.4);animation:pulse 2s infinite}
+.sidebar-footer .dot.gray{background:var(--text-dim)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.sidebar-footer .ft{font-size:11px;color:var(--text-dim)}
+
+/* Main */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{height:50px;min-height:50px;border-bottom:1px solid var(--card-border);display:flex;align-items:center;padding:0 24px;gap:12px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+.topbar .ttl{font-size:15px;font-weight:600}
+.topbar .spacer{flex:1}
+
+/* Connect Button */
+.cn-bar{display:flex;align-items:center;gap:8px;padding:5px 14px;border-radius:20px;border:1px solid var(--card-border);background:#f8fafc;cursor:default}
+.cn-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.cn-dot.on{background:var(--success);box-shadow:0 0 6px rgba(22,163,74,.4);animation:pulse 2s infinite}
+.cn-dot.off{background:var(--text-dim)}
+.cn-label{font-size:12px;font-weight:600;color:var(--text-muted)}
+.cn-btn{padding:5px 14px;border-radius:14px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:var(--font);background:var(--accent);color:#fff;transition:all .12s}
+.cn-btn:hover{background:var(--accent-hover)}
+.cn-btn.on{background:#f0fdf4;color:var(--success);border:1px solid #bbf7d0}
+.cn-btn.on:hover{background:#dcfce7}
+
+/* Content */
+.content{flex:1;overflow-y:auto;padding:24px;display:flex;flex-direction:column;gap:16px}
+.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius);padding:20px}
+.card-title{font-size:12px;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:.3px;margin-bottom:14px}
+
+/* Connection Guide */
+.guide-steps{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+.guide-step{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#fff;border:1px solid var(--card-border);border-radius:6px;font-size:13px}
+.guide-num{width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.guide-step code{background:#f1f5f9;padding:2px 7px;border-radius:4px;font-size:12px;font-weight:600}
+
+
+/* Forms */
+.fg{display:flex;flex-direction:column;gap:4px}
+.fg label{font-size:11px;color:var(--text-muted);font-weight:500}
+.fg input,.fg select,.fg textarea{background:#f8fafc;border:1px solid var(--card-border);border-radius:6px;padding:8px 11px;color:var(--text);font-size:13px;font-family:var(--font);outline:none;transition:border-color .12s}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--accent)}
+.fg input::placeholder{color:var(--text-dim)}
+.fg textarea{resize:vertical;min-height:60px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;border:none;font-family:var(--font);transition:all .12s}
+.btn-p{background:var(--accent);color:#fff}
+.btn-p:hover{background:var(--accent-hover)}
+.btn-p:disabled{opacity:.5;cursor:not-allowed}
+.btn-s{background:transparent;color:var(--text-muted);border:1px solid var(--card-border)}
+.btn-s:hover{color:var(--text);border-color:var(--text-dim)}
+.form-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.result-box{min-height:120px}
+.result-box .loading{display:flex;align-items:center;justify-content:center;padding:30px;gap:10px}
+.spin{width:22px;height:22px;border:3px solid var(--card-border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.insight{display:flex;flex-direction:column;gap:6px}
+.insight-item{padding:9px 12px;background:#eff6ff;border-left:3px solid var(--accent);border-radius:0 var(--radius) var(--radius) 0;font-size:12px;line-height:1.5}
+.rec-item{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:#f8fafc;border:1px solid var(--card-border);border-radius:6px}
+.pill{padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;text-transform:uppercase;white-space:nowrap}
+.pill-high{background:#fef2f2;color:var(--danger)}
+.pill-med{background:#fffbeb;color:var(--warning)}
+.pill-low{background:#f0fdf4;color:var(--success)}
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{text-align:left;padding:8px 10px;color:var(--text-muted);font-weight:600;border-bottom:1px solid var(--card-border);background:#f8fafc}
+.tbl td{padding:8px 10px;border-bottom:1px solid #f1f5f9}
+.tbl tr:hover td{background:#eff6ff}
+/* Metrics */
+.metrics{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.mt{background:#f8fafc;border:1px solid var(--card-border);border-radius:var(--radius);padding:14px 16px}
+.mt .val{font-size:22px;font-weight:700;margin-bottom:3px}
+.mt .lbl{font-size:10px;color:var(--text-dim)}
+
+/* Toast */
+.toast{position:fixed;top:16px;right:16px;padding:10px 16px;border-radius:var(--radius);font-size:12px;font-weight:600;z-index:999;animation:slideIn .25s ease;box-shadow:0 4px 12px rgba(0,0,0,.1)}
+.toast.ok{background:#f0fdf4;color:var(--success);border:1px solid #bbf7d0}
+.toast.err{background:#fef2f2;color:var(--danger);border:1px solid #fecaca}
+.toast.inf{background:#eff6ff;color:var(--accent);border:1px solid #bfdbfe}
+@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+
+/* Empty state */
+.empty{text-align:center;padding:40px 20px;color:var(--text-dim)}
+.empty .icon{font-size:36px;margin-bottom:10px;opacity:.6}
+
+/* Responsive */
+@media(max-width:768px){.sidebar{width:52px;min-width:52px}.sidebar-header h1,.sidebar-header .sub,.nav-item span,.sidebar-footer .ft{display:none}.nav-item{justify-content:center;padding:10px 6px}.metrics{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-header"><h1>AMZ analysis set</h1><div class="sub">Amazon Seller Intelligence</div></div>
+  <nav class="sidebar-nav" id="sidebarNav"></nav>
+  <div class="sidebar-footer">
+    <span class="dot gray" id="sDot"></span>
+    <span class="ft" id="sText">未连接</span>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <span class="ttl" id="mTitle">数据面板</span>
+    <span class="spacer"></span>
+    <div class="cn-bar">
+      <span class="cn-dot off" id="cnDot"></span>
+      <span class="cn-label" id="cnLabel">Codex</span>
+    </div>
+    <button class="cn-btn" id="cnBtn" onclick="toggleConnect()">连接</button>
+  </div>
+  <div class="content" id="content"></div>
+</main>
+
+<script>
+const BASE='http://127.0.0.1:9876';
+let connected=false,manualDisconnect=false,current='dashboard',esSource=null;
+
+const MODULES=[
+  {id:'dashboard',label:'数据面板',icon:'M4 6h16M4 12h16M4 18h7',color:'#3b82f6'},
+  {id:'product-research',label:'选品分析',icon:'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z',color:'#06b6d4'},
+  {id:'competitor-analysis',label:'竞品分析',icon:'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z',color:'#8b5cf6'},
+  {id:'keyword-research',label:'关键词研究',icon:'M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 12V7a4 4 0 014-4z',color:'#f59e0b'},
+  {id:'advertising-analytics',label:'广告分析',icon:'M13 10V3L4 14h7v7l9-11h-7z',color:'#ef4444'},
+  {id:'listing-generator',label:'Listing 文案',icon:'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z',color:'#22c55e'},
+  {id:'review-analysis',label:'评论 VOC',icon:'M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z',color:'#ec4899'},
+  {id:'price-monitor',label:'价格监控',icon:'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z',color:'#14b8a6'},
+];
+
+// Render sidebar
+const nav=document.getElementById('sidebarNav');
+MODULES.forEach(m=>{
+  const b=document.createElement('button');
+  b.className='nav-item';b.id='nav-'+m.id;
+  b.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${m.icon}"/></svg><span>${m.label}</span>`;
+  b.onclick=()=>switchModule(m.id);
+  nav.appendChild(b);
+});
+
+function switchModule(id){
+  current=id;
+  const m=MODULES.find(x=>x.id===id);
+  document.getElementById('mTitle').textContent=m.label;
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+  document.getElementById('nav-'+id).classList.add('active');
+  renderModule(id);
+}
+
+function renderModule(id){
+  const c=document.getElementById('content');
+  if(!connected && id!=='dashboard'){
+    c.innerHTML=`<div class="card"><div class="card-title">${MODULES.find(x=>x.id===id).label}</div><div class="empty"><div class="icon">🔌</div><p>请先点击右上角"连接"按钮</p></div></div>`;
+    return;
+  }
+  switch(id){
+    case 'dashboard':c.innerHTML=dashboardHTML();break;
+    case 'product-research':c.innerHTML=formHTML(id,'选品分析',[
+      {l:'目标类目',n:'category',t:'text',p:'如: Kitchen & Dining'},
+      {l:'价格区间 ($)',n:'priceRange',t:'text',p:'如: 15-35'},
+      {l:'月销量门槛',n:'monthlySales',t:'number',p:'如: 300'},
+      {l:'竞争度',n:'competitionLevel',t:'select',o:['不限','低','中','高']}
+    ]);break;
+    case 'competitor-analysis':c.innerHTML=formHTML(id,'竞品分析',[
+      {l:'竞品 ASIN',n:'asins',t:'textarea',p:'每行一个 ASIN'}
+    ]);break;
+    case 'keyword-research':c.innerHTML=formHTML(id,'关键词研究',[
+      {l:'种子关键词',n:'seedKeywords',t:'textarea',p:'每行一个'},
+      {l:'匹配类型',n:'matchType',t:'select',o:['broad','phrase','exact']}
+    ]);break;
+    case 'advertising-analytics':c.innerHTML=formHTML(id,'广告分析',[
+      {l:'广告活动 ID',n:'campaignIds',t:'text',p:'多个用逗号分隔'},
+      {l:'日期范围',n:'dateRange',t:'text',p:'如: 最近30天'}
+    ]);break;
+    case 'listing-generator':c.innerHTML=formHTML(id,'Listing 文案',[
+      {l:'产品 ASIN',n:'asin',t:'text',p:'如: B0XXXXXXX'},
+      {l:'目标关键词',n:'targetKeywords',t:'textarea',p:'每行一个'},
+      {l:'文案风格',n:'tone',t:'select',o:['professional','persuasive','friendly']}
+    ]);break;
+    case 'review-analysis':c.innerHTML=formHTML(id,'评论 VOC',[
+      {l:'产品 ASIN',n:'asin',t:'text',p:'如: B0XXXXXXX'},
+      {l:'星级筛选',n:'starFilter',t:'select',o:['全部','1-2星差评','3星中评','4-5星好评']},
+      {l:'分析评论数',n:'reviewCount',t:'number',p:'默认: 100'}
+    ]);break;
+    case 'price-monitor':c.innerHTML=formHTML(id,'价格监控',[
+      {l:'监控 ASIN',n:'asins',t:'textarea',p:'每行一个'},
+      {l:'回溯天数',n:'daysBack',t:'number',p:'默认: 90'}
+    ]);break;
+  }
+}
+
+function dashboardHTML(){
+  return `<div class="metrics">
+    <div class="mt"><div class="val" style="color:var(--accent)">--</div><div class="lbl">今日销售额 ($)</div></div>
+    <div class="mt"><div class="val" style="color:var(--accent-2)">--</div><div class="lbl">今日订单数</div></div>
+    <div class="mt"><div class="val" style="color:var(--danger)">--%</div><div class="lbl">ACoS</div></div>
+    <div class="mt"><div class="val" style="color:var(--warning)">--</div><div class="lbl">库存预警</div></div>
+  </div>
+  <div class="card"><div class="card-title">连接状态</div>
+    <div class="empty"><div class="icon">${connected?'&#x1F7E2;':'&#x26AA;'}</div><p>${connected?'Codex 已连接，选择左侧模块开始分析':'点击右上角 <b>"连接"</b> 按钮以启动 Codex 连接'}</p></div>
+  </div>`;
+}
+
+function formHTML(id,title,fields){
+  const fi=fields.map(f=>{
+    if(f.t==='textarea')return `<div class="fg"><label>${f.l}</label><textarea name="${f.n}" placeholder="${f.p||''}" rows="3"></textarea></div>`;
+    if(f.t==='select')return `<div class="fg"><label>${f.l}</label><select name="${f.n}">${f.o.map(o=>`<option>${o}</option>`).join('')}</select></div>`;
+    return `<div class="fg"><label>${f.l}</label><input type="${f.t}" name="${f.n}" placeholder="${f.p||''}"></div>`;
+  }).join('');
+  return `<div class="card"><div class="card-title">${title} - 分析参数</div>
+    <div class="form-row">${fi}</div>
+    <div style="margin-top:14px;display:flex;gap:8px">
+      <button class="btn btn-p" onclick="submitTask('${id}')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        开始分析
+      </button>
+      <button class="btn btn-s" onclick="clearResult()">清空结果</button>
+    </div>
+  </div>
+  <div class="card result-box" id="resultBox"><div class="empty"><div class="icon">&#x1F4CA;</div><p>输入参数后点击"开始分析"</p></div></div>`;
+}
+
+async function submitTask(module){
+  const box=document.getElementById('resultBox');
+  box.innerHTML=`<div class="loading"><div class="spin"></div><span style="font-size:13px;color:var(--text-muted)">提交任务中...</span></div>`;
+
+  const params={};
+  document.querySelectorAll('.form-row input,.form-row select,.form-row textarea').forEach(el=>{
+    if(el.name&&el.value.trim()){
+      const v=el.value.trim();
+      if(el.tagName==='TEXTAREA')params[el.name]=v.split('\n').filter(x=>x.trim());
+      else if(el.type==='number')params[el.name]=Number(v)||v;
+      else params[el.name]=v;
+    }
+  });
+
+  try{
+    const r=await fetch(BASE+'/api/'+module,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(params)});
+    const d=await r.json();
+    box.innerHTML=`<div class="loading"><div class="spin"></div><span style="font-size:13px;color:var(--text-muted)">任务 ${d.requestId} 已提交，等待 Codex 处理...</span><br><span style="font-size:11px;color:var(--text-dim);margin-top:6px">在 Codex 对话中发送任意消息即可触发处理</span></div>`;
+    toast('info','任务已提交，等待 Codex 处理');
+  }catch(e){
+    box.innerHTML=`<div class="empty"><div class="icon">&#x26A0;</div><p>提交失败: ${e.message}</p></div>`;
+    toast('error','提交失败，请确认桥接服务器已启动');
+  }
+}
+
+function clearResult(){
+  const box=document.getElementById('resultBox');
+  if(box)box.innerHTML=`<div class="empty"><div class="icon">&#x1F4CA;</div><p>输入参数后点击"开始分析"</p></div>`;
+}
+
+function showResult(data){
+  const box=document.getElementById('resultBox');
+  if(!box)return;
+  let h='';
+  if(data.insights&&data.insights.length){
+    h+=`<div class="card-title" style="margin-bottom:10px">关键洞察</div><div class="insight">${data.insights.map(i=>`<div class="insight-item">${i}</div>`).join('')}</div>`;
+  }
+  if(data.recommendations&&data.recommendations.length){
+    h+=`<div class="card-title" style="margin-top:16px;margin-bottom:10px">行动建议</div>${data.recommendations.map(r=>`<div class="rec-item"><span class="pill pill-${r.priority}">${r.priority}</span><div><strong style="font-size:13px">${r.action}</strong><br><span style="font-size:11px;color:var(--text-dim)">${r.impact}</span></div></div>`).join('')}</div>`;
+  }
+  if(data.data&&typeof data.data==='object'){
+    if(Array.isArray(data.data)&&data.data.length){
+      const ks=Object.keys(data.data[0]);
+      h+=`<div class="card-title" style="margin-top:16px;margin-bottom:10px">数据明细</div><table class="tbl"><thead><tr>${ks.map(k=>`<th>${k}</th>`).join('')}</tr></thead><tbody>${data.data.map(r=>`<tr>${ks.map(k=>`<td>${r[k]??'-'}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+    }else{
+      h+=`<div class="card-title" style="margin-top:16px;margin-bottom:10px">数据明细</div><table class="tbl">${Object.entries(data.data).map(([k,v])=>`<tr><td style="font-weight:600">${k}</td><td>${v??'-'}</td></tr>`).join('')}</table>`;
+    }
+  }
+  box.innerHTML=h||`<div class="empty"><div class="icon">&#x2705;</div><p>分析完成</p></div>`;
+}// Connection
+async function checkConnection(){
+  try{const r=await fetch(BASE+'/api/status');await r.json();return true}catch(_){return false}
+}
+
+function updateUI(ok){
+  connected=ok;
+  document.getElementById('cnDot').className='cn-dot '+(ok?'on':'off');
+  document.getElementById('cnLabel').textContent=ok?'Codex 已连接':'Codex 未连接';
+  document.getElementById('cnBtn').textContent=ok?'断开':'连接';
+  document.getElementById('cnBtn').className='cn-btn'+(ok?' on':'');
+  document.getElementById('sDot').className='dot '+(ok?'green':'gray');
+  document.getElementById('sText').textContent=ok?'已连接':'未连接';
+  renderModule(current);
+}
+
+async function toggleConnect(){
+  if(connected){
+    manualDisconnect=true;
+    if(esSource){esSource.close();esSource=null}
+    connected=false;
+    updateUI(false);
+    renderModule(current);
+    toast('info','已断开 Codex 连接');
+    return;
+  }
+  manualDisconnect=false;
+  const ok=await checkConnection();
+  if(ok){
+    startSSE();
+    updateUI(true);
+    renderModule(current);
+    toast('success','已连接到 Codex');
+  }else{
+    updateUI(false);
+    renderModule(current);
+    showGuide();
+    toast('error','无法连接，请确认已启动桥接服务器');
+  }
+}
+
+function showGuide(){
+  document.getElementById('content').insertAdjacentHTML('afterbegin',`
+    <div class="card" id="guideBox" style="border:2px solid var(--accent);background:#eff6ff">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div class="card-title" style="margin-bottom:0;color:var(--accent)">启动指南</div>
+        <button onclick="document.getElementById('guideBox').remove()" style="background:none;border:none;cursor:pointer;font-size:16px;color:var(--text-dim);line-height:1">&times;</button>
+      </div>
+      <div class="guide-steps">
+        <div class="guide-step"><span class="guide-num">1</span>双击 <code>start.bat</code> 启动桥接服务器</div>
+        <div class="guide-step"><span class="guide-num">2</span>看到黑色窗口显示 <code>Bridge Server: http://127.0.0.1:9876</code> 后不要关闭</div>
+        <div class="guide-step"><span class="guide-num">3</span>回到此页面，点击右上角 <b>"连接"</b> 按钮</div>
+      </div>
+    </div>
+  `);
+}
+
+function toast(type,msg){
+  const t=document.createElement('div');
+  t.className='toast '+(type==='success'?'ok':type==='error'?'err':'inf');
+  t.textContent=msg;document.body.appendChild(t);
+  setTimeout(()=>t.remove(),3000);
+}
+
+// SSE
+function startSSE(){
+  if(esSource){esSource.close()}
+  esSource=new EventSource(BASE+'/api/sse');
+  esSource.addEventListener('connected',()=>{if(!manualDisconnect)updateUI(true)});
+  esSource.addEventListener('task_submitted',(e)=>{try{const d=JSON.parse(e.data);toast('info','任务已提交: '+d.requestId)}catch(_){}});
+  esSource.addEventListener('result',(e)=>{try{const d=JSON.parse(e.data);showResult(d);toast('success','分析完成')}catch(_){}});
+  esSource.addEventListener('error',(e)=>{try{const d=JSON.parse(e.data);toast('error',d.error||'分析出错')}catch(_){toast('error','分析出错')}});
+  esSource.onerror=()=>{
+    if(!manualDisconnect){updateUI(false);setTimeout(startSSE,5000)}
+    else{esSource.close();esSource=null}
+  };
+}
+function connectSSE(){manualDisconnect=false;startSSE()}
+
+// Init
+switchModule('dashboard');
+connectSSE();
+checkConnection().then(ok=>updateUI(ok));
+</script>
+</body>
+</html>
